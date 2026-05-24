@@ -1,11 +1,14 @@
-numpy
-scipy
-matplotlib
-torch
-ase
+numpy>=2.1
+scipy>=1.15
+matplotlib>=3.10
+torch>=2.12
+ase>=3.26
+deepmd-kit>=3.1
+mattersim>=1.2
+orb-models>=0.5
 # Needed only for Orb-based data generation:
-orb-models
+orb-models>=0.5
 # Needed only for MatterSim-based data generation:
-mattersim
+mattersim>=1.2
 # Needed only for DeepMD MLP baseline/validation:
-deepmd-kit
+deepmd-kit>=3.1
