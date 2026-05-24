@@ -1,4 +1,4 @@
-generate_data_dist.py is used to generate distillation data and generate_data_ft.py is used to generate fine-tuning data. The fine-tuning data will be a folder "data" containing 5 datasets (dataset1-dataset5, which means the percentage of data will be used for fine-tuning, dataset1 means 10%). Please copy any dataset folder into ft folder to do fine-tuning.
+generate_data_dist.py is used to generate distillation data and generate_data_ft.py is used to generate fine-tuning data. The fine-tuning data will be a folder "data" containing n datasets (dataset1-datasetn, which means the percentage of data will be used for fine-tuning, dataset1 means 10%). Please copy any dataset folder into ft folder to do fine-tuning.
 
 Sometimes there will be error with type.raw file. For different models (MLP, sr+lr, SAPT), if there is such a problem, I prepare a type.raw file in each folder and cp it into dataset/set.000 and dataset/set.001.
 
