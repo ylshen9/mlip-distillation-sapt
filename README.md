@@ -33,7 +33,7 @@ Install the dependencies in your existing Python environment:
 
 ```bash
 pip install -r requirements.txt
-
+```
 Some workflows require additional packages or separate environments:
 
 - Orb teacher data generation requires `orb-models`.
