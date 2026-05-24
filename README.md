@@ -25,17 +25,14 @@ He-multi/    He--multi-ring PAH transfer workflows for coronene, C-coronene, CC-
 
 - `He-multi/generate_data.py`: generate transfer datasets using Orb or MatterSim teachers.
 - `He-multi/train.py`: train the combined He--PAH model.
-- `He-multi/ft/fig5/all.py`: reproduce the Fig. 5-style transfer comparison.
+- `He-multi/ft/fig5/plot.py`: reproduce the Fig. 5-style transfer comparison.
 
 ## Installation
 
-Create a Python environment and install the core dependencies:
+Install the dependencies in your existing Python environment:
 
 ```bash
-conda create -n mlip-distill python=3.10
-conda activate mlip-distill
 pip install -r requirements.txt
-```
 
 Some workflows require additional packages or separate environments:
 
@@ -43,19 +40,9 @@ Some workflows require additional packages or separate environments:
 - MatterSim teacher data generation requires `mattersim`.
 - DeepMD baseline requires `deepmd-kit` and the `dp` command-line tool.
 
-## Data and model files
-
-Small processed datasets and final model files may be included in this repository. Large training sweeps, repeated checkpoints, and raw simulation outputs should be stored separately, for example in Zenodo, Figshare, or a GitHub Release.
-
-Recommended files to keep outside normal Git history:
-
-- repeated checkpoint folders such as `He-BZ/SAPT/fig4/*/check*/`
-- full raw simulation outputs
-- very large `.npy`, `.npz`, `.pt`, `.pb`, or `.ckpt` files unless tracked by Git LFS
-
 ## Reproducibility notes
 
-The `Please read.txt` files in each workflow folder describe the intended use of each script and dataset. In particular, for He--benzene fine-tuning, `dataset1`--`dataset5` correspond to increasing fine-tuning fractions.
+The `Please read.txt` files in each workflow folder describe the intended use of each script and dataset.
 
 ## Citation
 
