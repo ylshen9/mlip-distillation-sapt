@@ -1,0 +1,11 @@
+numpy
+scipy
+matplotlib
+torch
+ase
+# Needed only for Orb-based data generation:
+orb-models
+# Needed only for MatterSim-based data generation:
+mattersim
+# Needed only for DeepMD MLP baseline/validation:
+deepmd-kit

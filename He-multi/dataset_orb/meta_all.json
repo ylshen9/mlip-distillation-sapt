@@ -1,0 +1,23 @@
+{
+  "systems": [
+    "system_ring1",
+    "system_ring2",
+    "system_ring3",
+    "system_ring4"
+  ],
+  "n_train_per_system": 600,
+  "n_val_per_system": 200,
+  "n_train_total": 2400,
+  "n_val_total": 800,
+  "seed": 2025,
+  "label": "binding_energy",
+  "label_unit": "eV",
+  "ring1_source": {
+    "file": "coronene.npy",
+    "n_use": null
+  },
+  "rings234_source": {
+    "file": "multi.npy",
+    "method": "pbe0_def2-SVP"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "ring": 4,
+  "n_train": 600,
+  "n_val": 200,
+  "box_size": 40.0,
+  "core_range_A": [
+    2.0,
+    6.0
+  ],
+  "tail_range_A": [
+    6.0,
+    12.0
+  ],
+  "core_weight": 0.8,
+  "r_min_avoid_A": 1.0,
+  "z_bias_A": 0.0,
+  "charge": 0,
+  "spin_multiplicity": 1,
+  "energy_reference_eV": -156143.609375,
+  "energy_max_abs_bind_cm1": 1000.0,
+  "cm1_per_eV": 8065.544005,
+  "n_generated_total": 3445,
+  "n_good_total": 800,
+  "label": "binding_energy",
+  "label_unit": "eV",
+  "n_atoms_host": 180,
+  "n_atoms_total_with_He": 181,
+  "direction_source": {
+    "file": "multi.npy",
+    "method": "pbe0_def2-SVP",
+    "format": "dict[key][method]->xyzE"
+  }
+}

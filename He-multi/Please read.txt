@@ -1,0 +1,3 @@
+Here we use one model to represent the interaction between He and multi-circle structures.
+
+In generate_data.py here, I use Orb_models and just replace it with MatterSim if needed.

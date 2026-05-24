@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.ipynb_checkpoints/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+*.out
+*.err
+slurm-*.out
+
+# Temporary files
+*.tmp
+*.bak
+
+# Training checkpoints / repeated intermediate models
+**/check*/
+**/checkpoint*/
+**/checkpoints/
+
+# Large model/checkpoint formats
+*.ckpt
+*.pth
+*.tar
+*.zip
+*.gz
+
+# Keep small .pt/.npz/.npy only if intentionally tracked.
+# If you want to ignore all model/data arrays, uncomment these:
+# *.pt
+# *.npy
+# *.npz
+
+# VASP / electronic-structure large outputs
+WAVECAR
+CHGCAR
+vasprun.xml
+OUTCAR
+POTCAR
+EIGENVAL
+PROCAR
+DOSCAR
+XDATCAR
+IBZKPT
+
+# Secrets / local config
+.env
+secrets.*
+config.local.*
