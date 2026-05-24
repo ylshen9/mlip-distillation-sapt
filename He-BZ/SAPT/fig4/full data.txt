@@ -1,0 +1,5 @@
+The full Fig. 4 checkpoint and validation folders are not tracked in the Git repository because of their size. They are provided as GitHub Release assets.
+Release asset:
+
+```text
+fig4_checkpoints_validation.tar.gz
