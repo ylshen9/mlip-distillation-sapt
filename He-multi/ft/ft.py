@@ -13,6 +13,6 @@ if __name__ == "__main__":
         pretrained_path=None,
         use_long_range=True,
         w_force=0.005,
-        sr_descriptor_cuts=(4.0, 12.0),
-        lr_descriptor_cuts=(4.0, 12.0),
+        sr_descriptor_cuts=(3.0, 12.0),
+        lr_descriptor_cuts=(3.0, 12.0),
     )
