@@ -1,0 +1,74 @@
+{
+  "ring": 3,
+  "input_system_dir": "dataset_mattersim/system_ring3",
+  "output_system_dir": "dataset/system_ring3",
+  "uma_model": "uma-s-1p2",
+  "uma_task_name": "omol",
+  "device": "cpu",
+  "charge": 0,
+  "spin": 1,
+  "energy_reference": "E(PAH + He_far at FAR_Z=20.0 Angstrom)",
+  "energy_reference_eV": -100039.07179197436,
+  "energy_saved": "E(PAH + He_current) - E(PAH + He_far)",
+  "energy_unit": "eV",
+  "force_unit": "eV/Angstrom",
+  "energy_max_abs_bind_cm1": 1000.0,
+  "cm1_per_eV": 8065.544005,
+  "n_atoms_total_with_He": 121,
+  "type_map": [
+    "C",
+    "H",
+    "He"
+  ],
+  "sets": [
+    {
+      "set": "set.000",
+      "target_nframe": 600,
+      "kept_from_dataset_mattersim": 578,
+      "removed_from_dataset_mattersim": 22,
+      "supplemented": 22,
+      "supplement_attempts": 55,
+      "final_nframe": 600,
+      "energy_min_eV": -0.028196290382766165,
+      "energy_max_eV": 0.1216646986285923,
+      "energy_mean_eV": 0.004950700619980731,
+      "energy_min_cm1": -227.4184208599588,
+      "energy_max_cm1": 981.2919806439744,
+      "energy_mean_cm1": 39.93009370603537
+    },
+    {
+      "set": "set.001",
+      "target_nframe": 200,
+      "kept_from_dataset_mattersim": 190,
+      "removed_from_dataset_mattersim": 10,
+      "supplemented": 10,
+      "supplement_attempts": 20,
+      "final_nframe": 200,
+      "energy_min_eV": -0.02756249411322642,
+      "energy_max_eV": 0.12211208952066954,
+      "energy_mean_eV": 0.005465528554850607,
+      "energy_min_cm1": -222.30650915778114,
+      "energy_max_cm1": 984.9004315714595,
+      "energy_mean_cm1": 44.08246106973163
+    }
+  ],
+  "sampling": {
+    "seed": 2025,
+    "r_min_avoid_A": 1.0,
+    "core_range_A": [
+      2.0,
+      6.0
+    ],
+    "tail_range_A": [
+      6.0,
+      12.0
+    ],
+    "core_weight": 0.8,
+    "z_bias_A": 0.0,
+    "direction_source": {
+      "file": "multi.npy",
+      "method": "pbe0_def2-SVP",
+      "format": "dict[key][method]->xyzE"
+    }
+  }
+}
