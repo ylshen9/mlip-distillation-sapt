@@ -274,12 +274,7 @@ def calc_mae(E_ref, E_pred):
 
 
 def make_smooth_curve(x, y, n=250):
-    """Return a dense 1D interpolation curve sorted by x.
 
-    Uses monotone PCHIP interpolation when scipy is available; otherwise
-    falls back to numpy linear interpolation. PCHIP avoids most overshoot
-    artifacts while making sparse DFT reference points visually smooth.
-    """
     x = np.asarray(x, dtype=float)
     y = np.asarray(y, dtype=float)
     order = np.argsort(x)
@@ -335,10 +330,10 @@ def main():
     }
 
     colors = {
-        "Coronene": "red",
-        "C_Coronene": "green",
-        "CC_Coronene": "orange",
-        "CCC_Coronene": "blue",
+        "Coronene": "#FC8D62",
+        "C_Coronene": "#66C2A5",
+        "CC_Coronene": "#FDB462",
+        "CCC_Coronene": "#8DA0CB",
     }
 
     short_labels = {
@@ -397,7 +392,7 @@ def main():
 
     common_zmax = max(float(selected[name]["z"].max()) for name in ordered_names)
 
-    mpl_std_Params(0.17, y=1, cmap="Set2")
+    mpl_std_Params(0.16, y=1, cmap="Set2")
 
     fig, axes = plt.subplots(
         3,
@@ -494,34 +489,16 @@ def main():
                 labelspacing=0.2,
             )
 
-    pred_orb_all = {}
-    pred_ms_all = {}
-    pred_uma_all = {}
+    model_specs = [
+        ("Orb", model_orb, 0),
+        ("MatterSim", model_ms, 1),
+        ("UMA", model_uma, 2),
+    ]
 
-    mae_table = {
-        "Orb": {},
-        "MatterSim": {},
-        "UMA": {},
-    }
+    n_rows = len(model_specs)
 
-    for col, name in enumerate(ordered_names):
-        host_syms, host_pos = get_host(name)
-        Z = np.array([type_dict[s] for s in host_syms] + [type_dict["He"]], dtype=int)
-
-        xyz = selected[name]["xyz"]
-        z = selected[name]["z"]
-        E_ref = selected[name]["E_ref"]
-
-        E_pred = predict_eV(model_orb, Z, host_pos, xyz, box) * CM1_PER_eV
-        pred_orb_all[name] = E_pred
-
-        plot_ref_pred(axes[0, col], z, E_ref, E_pred, colors[name], show_legend=False)
-
-        n_atoms = len(host_syms) + 1
-        mae = calc_mae(E_ref, E_pred)
-        mae_per_atom = mae / n_atoms
-
-        mae_table["Orb"][name] = (mae, mae_per_atom, n_atoms)
+    pred_all = {}
+    mae_table = {model_name: {} for model_name, _, _ in model_specs}
 
     cor_xmin = float(selected["Coronene"]["z"].min())
     cor_xmax = float(selected["Coronene"]["z"].max())
@@ -531,114 +508,65 @@ def main():
     other_xmax = max(float(selected[name]["z"].max()) for name in z_scale_names)
     other_xmax = min(other_xmax, 4.0)
 
-    ax_e = axes[0, 4]
     z_e = np.linspace(other_xmin, other_xmax, 90)
     fifth_col_y_values = []
 
-    for name in ordered_names:
-        _, E_pred_center = predict_line_for_xy(
-            model_orb, name, z_e, xy=(0.0, 0.0), type_dict=type_dict, box=box
-        )
+    for model_name, model, row in model_specs:
+        pred_all[model_name] = {}
 
-        z_dense, E_dense = make_smooth_curve(z_e, E_pred_center, n=250)
-        fifth_col_y_values.append(E_dense)
-        ax_e.plot(
-            z_dense,
-            E_dense,
-            linestyle="-",
-            linewidth=1.0,
-            color=colors[name],
-            label=short_labels[name],
-        )
+        for col, name in enumerate(ordered_names):
+            host_syms, host_pos = get_host(name)
+            Z = np.array([type_dict[s] for s in host_syms] + [type_dict["He"]], dtype=int)
 
-    ax_e.tick_params(top=False, right=False)
+            xyz = selected[name]["xyz"]
+            z = selected[name]["z"]
+            E_ref = selected[name]["E_ref"]
 
-    for col, name in enumerate(ordered_names):
-        host_syms, host_pos = get_host(name)
-        Z = np.array([type_dict[s] for s in host_syms] + [type_dict["He"]], dtype=int)
+            E_pred = predict_eV(model, Z, host_pos, xyz, box) * CM1_PER_eV
+            pred_all[model_name][name] = E_pred
 
-        xyz = selected[name]["xyz"]
-        z = selected[name]["z"]
-        E_ref = selected[name]["E_ref"]
+            plot_ref_pred(
+                axes[row, col],
+                z,
+                E_ref,
+                E_pred,
+                colors[name],
+                show_legend=(row == n_rows - 1),
+            )
 
-        E_pred = predict_eV(model_ms, Z, host_pos, xyz, box) * CM1_PER_eV
-        pred_ms_all[name] = E_pred
+            n_atoms = len(host_syms) + 1
+            mae = calc_mae(E_ref, E_pred)
+            mae_per_atom = mae / n_atoms
 
-        plot_ref_pred(axes[1, col], z, E_ref, E_pred, colors[name], show_legend=True)
+            mae_table[model_name][name] = (mae, mae_per_atom, n_atoms)
 
-        n_atoms = len(host_syms) + 1
-        mae = calc_mae(E_ref, E_pred)
-        mae_per_atom = mae / n_atoms
+        ax_e = axes[row, 4]
 
-        mae_table["MatterSim"][name] = (mae, mae_per_atom, n_atoms)
+        for name in ordered_names:
+            _, E_pred_center = predict_line_for_xy(
+                model,
+                name,
+                z_e,
+                xy=(0.0, 0.0),
+                type_dict=type_dict,
+                box=box,
+            )
 
-    ax_e2 = axes[1, 4]
+            z_dense, E_dense = make_smooth_curve(z_e, E_pred_center, n=250)
+            fifth_col_y_values.append(E_dense)
 
-    for name in ordered_names:
-        _, E_pred_center = predict_line_for_xy(
-            model_ms, name, z_e, xy=(0.0, 0.0), type_dict=type_dict, box=box
-        )
+            ax_e.plot(
+                z_dense,
+                E_dense,
+                linestyle="-",
+                linewidth=1.0,
+                color=colors[name],
+                label=short_labels[name],
+            )
 
-        z_dense, E_dense = make_smooth_curve(z_e, E_pred_center, n=250)
-        fifth_col_y_values.append(E_dense)
-        ax_e2.plot(
-            z_dense,
-            E_dense,
-            linestyle="-",
-            linewidth=1.0,
-            color=colors[name],
-            label=short_labels[name],
-        )
+        ax_e.tick_params(top=False, right=False)
 
-    ax_e2.tick_params(top=False, right=False)
-    ax_e2.legend(
-        frameon=False,
-        loc="upper right",
-        handlelength=0.8,
-        labelspacing=0.2,
-        columnspacing=0.8,
-        ncol=2,
-    )
-
-    for col, name in enumerate(ordered_names):
-        host_syms, host_pos = get_host(name)
-        Z = np.array([type_dict[s] for s in host_syms] + [type_dict["He"]], dtype=int)
-
-        xyz = selected[name]["xyz"]
-        z = selected[name]["z"]
-        E_ref = selected[name]["E_ref"]
-
-        E_pred = predict_eV(model_uma, Z, host_pos, xyz, box) * CM1_PER_eV
-        pred_uma_all[name] = E_pred
-
-        plot_ref_pred(axes[2, col], z, E_ref, E_pred, colors[name], show_legend=True)
-
-        n_atoms = len(host_syms) + 1
-        mae = calc_mae(E_ref, E_pred)
-        mae_per_atom = mae / n_atoms
-
-        mae_table["UMA"][name] = (mae, mae_per_atom, n_atoms)
-
-    ax_e3 = axes[2, 4]
-
-    for name in ordered_names:
-        _, E_pred_center = predict_line_for_xy(
-            model_uma, name, z_e, xy=(0.0, 0.0), type_dict=type_dict, box=box
-        )
-
-        z_dense, E_dense = make_smooth_curve(z_e, E_pred_center, n=250)
-        fifth_col_y_values.append(E_dense)
-        ax_e3.plot(
-            z_dense,
-            E_dense,
-            linestyle="-",
-            linewidth=1.0,
-            color=colors[name],
-            label=short_labels[name],
-        )
-
-    ax_e3.tick_params(top=False, right=False)
-    ax_e3.legend(
+    axes[-1, 4].legend(
         frameon=False,
         loc="upper right",
         handlelength=0.8,
@@ -650,11 +578,11 @@ def main():
 
     common_ylim = (-150.0, 149.0)
 
-    axes[1, 0].set_ylim(common_ylim)
-    axes[1, 0].yaxis.set_major_locator(MaxNLocator(5))
+    axes[-1, 0].set_ylim(common_ylim)
+    axes[-1, 0].yaxis.set_major_locator(MaxNLocator(5))
     fig.canvas.draw()
 
-    common_ticks = axes[1, 0].get_yticks()
+    common_ticks = axes[-1, 0].get_yticks()
 
     if fifth_col_y_values:
         fifth_col_ymin = float(min(np.min(y) for y in fifth_col_y_values)) - 1.0
@@ -665,7 +593,7 @@ def main():
     cor_xticks = np.arange(np.ceil(cor_xmin), np.floor(cor_xmax) + 1, 1)
     other_xticks = np.arange(np.ceil(other_xmin), np.floor(other_xmax) + 1, 1)
 
-    for row in range(3):
+    for row in range(n_rows):
         for col in range(5):
             ax = axes[row, col]
 
@@ -694,11 +622,11 @@ def main():
             )
             ax.tick_params(top=False, right=False)
 
-    for row in range(3):
+    for row in range(n_rows):
         for col in range(1, 4):
             axes[row, col].set_yticklabels([])
 
-    for row in range(3):
+    for row in range(n_rows):
         axes[row, 4].yaxis.set_ticks_position("right")
         axes[row, 4].tick_params(
             labelleft=False,
@@ -708,12 +636,12 @@ def main():
             top=False,
         )
 
-    for row in range(3):
+    for row in range(n_rows):
         axes[row, 0].set_ylabel(r"$E$ ($\mathrm{cm}^{-1}$)", labelpad=12)
         axes[row, 0].yaxis.set_label_coords(-0.28, 0.5)
 
     plt.tight_layout()
-    plt.subplots_adjust(wspace=0.08, hspace=0.15)
+    plt.subplots_adjust(wspace=0.08, hspace=0.18)
 
     out_png = OUT_DIR / "combined_figure.png"
     out_svg = OUT_DIR / "combined_figure.svg"
